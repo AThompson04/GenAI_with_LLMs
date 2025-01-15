@@ -10,9 +10,6 @@ from langchain.chains import LLMChain, load_summarize_chain
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-## API Key - Remove from Final Code
-os.environ['OPENAI_API_KEY'] = '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'
-
 ## Defining Functions
 def load_document(file):
     """ A file loader that converts PDFs and other document formats into LangChain documents.
@@ -266,7 +263,8 @@ if __name__ == '__main__':
         if not model:
             model = 'gpt-3.5-turbo'
             st.warning('No model has been selected, so gpt-3.5-turbo will be used by default')
-        llm = ChatOpenAI(model_name = model, temperature = 0)
+        if openai_key:
+            llm = ChatOpenAI(model_name = model, temperature = 0)
         st.divider()
 
         # Loading Data
@@ -278,7 +276,7 @@ if __name__ == '__main__':
 
         convert_doc = st.button('Load Data')
 
-        if data and convert_doc:
+        if openai_key and data and convert_doc:
             with st.spinner('Uploading Data...'):
                 if data_type == 'Document':
                     bytes_data = data.read()
@@ -294,6 +292,8 @@ if __name__ == '__main__':
                 if 'document' in st.session_state and st.session_state.document:
                     all_text = ''.join(doc.page_content for doc in st.session_state.document)
                     st.session_state.all_text = all_text
+        elif data and convert_doc and not openai_key:
+            st.warning('Enter your OpenAI API key.')
 
     ## Main Page
     st.subheader('Document Summarisation')
