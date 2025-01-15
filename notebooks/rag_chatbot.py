@@ -1,8 +1,10 @@
 ## Importing Libraries
+from cgitb import reset
+
 import streamlit as st
 import time
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 ## Functions
 def load_document(file):
@@ -68,16 +70,34 @@ def create_embeddings_chroma(chunks, file_name):
     from chromadb.config import Settings
 
     # Create a unique directory for the file
-    persist_dir = os.path.join("./chroma_storage", file_name.split('.')[0])
-    os.makedirs(persist_dir, exist_ok=True)
+    persist_dir = os.path.join("./chroma_storage", f"file_name.split('.')[0]_{int(time.time())}")
+    #os.makedirs(persist_dir, exist_ok=True)
+    if not os.path.exists(persist_dir):
+        st.write(f"Directory does not exist. Creating {persist_dir}")
+        os.makedirs(persist_dir, exist_ok=True)
+    else:
+        st.write(f"Directory {persist_dir} already exists.")
 
-    client = chromadb.PersistentClient(path = persist_dir, settings = Settings(allow_reset=True))
+    #client = chromadb.PersistentClient(path = persist_dir, settings = Settings(allow_reset=True))
+    try:
+        client = chromadb.PersistentClient(path=persist_dir, settings=Settings(allow_reset=True, anonymized_telemetry=False))
+    except ValueError as e:
+        st.write(f"Error initializing PersistentClient: {e}")
+        return None
 
     # Initialize embeddings
     embeddings = OpenAIEmbeddings(model='text-embedding-3-small', dimensions=1536)
 
     # Create the vector store with the client
-    collections = client.get_or_create_collection('my_vector_store')  # You can name your collection
+    #collections = client.get_or_create_collection('my_vector_store')  # You can name your collection
+    # Create the vector store with the client
+    collection_name = 'my_vector_store'
+    try:
+        st.write(f"Attempting to create or fetch the collection: {collection_name}")
+        collections = client.get_or_create_collection(collection_name)
+    except ValueError as e:
+        st.write(f"Error creating/fetching collection: {e}")
+        return None
 
     # Prepare the unique document IDs
     text_chunks = [chunk.page_content for chunk in chunks]
@@ -85,17 +105,40 @@ def create_embeddings_chroma(chunks, file_name):
     embedding_vectors = embeddings.embed_documents(text_chunks)
 
     # Add the documents to the collection
-    collections.add(
-        ids = ids,
-        embeddings = embedding_vectors,
-        documents = text_chunks
-    )
+    #collections.add(
+    #    ids = ids,
+    #    embeddings = embedding_vectors,
+    #    documents = text_chunks
+    #)
+    try:
+        st.write(f"Adding {len(text_chunks)} documents to the collection.")
+        collections.add(
+            ids=ids,
+            embeddings=embedding_vectors,
+            documents=text_chunks
+        )
+    except Exception as e:
+        st.write(f"Error adding documents to collection: {e}")
+        return None
 
-    vector_store = Chroma(
-        collection_name = "my_vector_store",
-        persist_directory = persist_dir,
-        embedding_function = embeddings,
-    )
+    #vector_store = Chroma(
+    #    collection_name = "my_vector_store",
+    #    persist_directory = persist_dir,
+    #    embedding_function = embeddings,
+    #)
+
+    try:
+        st.write(f"Creating Chroma vector store at {persist_dir}")
+        vector_store = Chroma(
+            collection_name=collection_name,
+            persist_directory=persist_dir,
+            embedding_function=embeddings,
+        )
+        st.write(f"Vector store created at {persist_dir}")
+        return vector_store
+    except Exception as e:
+        st.write(f"Error creating Chroma vector store: {e}")
+        return None
 
     return vector_store
 
@@ -193,6 +236,9 @@ if __name__ == '__main__':
                 st.write(f'Embedding Cost: ${embedding_cost:.4f}')
 
                 vector_store = create_embeddings_chroma(chunks, file_name)
+                if vector_store is None:
+                    st.write("Error: vector store was not created.")
+                    # Handle the failure case here, maybe return or log a message
 
                 # Saving the vector store in the session state so that this does not rerun constantly
                 st.session_state.vs = vector_store
@@ -236,3 +282,5 @@ if __name__ == '__main__':
 
             # Add assistant response to chat history
             st.session_state.messages.append({"role": "assistant", "content": ai_response})
+
+
