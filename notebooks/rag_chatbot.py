@@ -153,10 +153,9 @@ def response_generator(response):
 if __name__ == '__main__':
     import os
 
-    os.environ[
-        'OPENAI_API_KEY'] = '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'
-
-    st.set_page_config(page_title='RAG', page_icon='catworking.png', layout='wide')
+    st.set_page_config(page_title='RAG',
+                       page_icon='../assets/catworking.png',
+                       layout='wide')
     st.subheader('Question-Answering Application for Private Documents')
     with st.sidebar:
         api_key = st.text_input('OpenAI API Key:', type='password')
@@ -168,7 +167,7 @@ if __name__ == '__main__':
         k = st.number_input('k', min_value=1, max_value=20, value=3)
         add_data = st.button('Add Data')
 
-        if uploaded_file and add_data:
+        if uploaded_file and add_data and api_key:
             with st.spinner('Reading, chunking and embedding file...'):
                 if 'vs' in st.session_state:
                     del st.session_state['vs']
@@ -198,6 +197,8 @@ if __name__ == '__main__':
                 # Saving the vector store in the session state so that this does not rerun constantly
                 st.session_state.vs = vector_store
                 st.success('File uploaded, chunked and embedded successfully')
+        elif uploaded_file and add_data and not api_key:
+            st.warning('Enter your OpenAI API key.')
 
     # Initialize chat history
     if "messages" not in st.session_state:
