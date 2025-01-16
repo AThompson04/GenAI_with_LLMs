@@ -2,7 +2,6 @@
 import streamlit as st
 import time
 from langchain_openai import OpenAIEmbeddings
-from langchain_chroma import Chroma
 
 ## Functions
 def load_document(file):
@@ -157,7 +156,7 @@ def ask_with_memory(vector_store, k, question, chat_history):
     crc = ConversationalRetrievalChain.from_llm(
         llm=llm,  # Link the ChatGPT LLM
         retriever=retriever,  # Link the vector store based retriever
-        chain_type='stuff',  # This mean that it must use all the text from the documents
+        chain_type='stuff',  # This means that it must use all the text from the documents when analysing
         combine_docs_chain_kwargs={'prompt': qa_prompt},
         verbose=False
     )
@@ -218,9 +217,6 @@ if __name__ == '__main__':
                 st.write(f'Embedding Cost: ${embedding_cost:.4f}')
 
                 vector_store = create_embeddings_chroma(chunks, file_name)
-                if vector_store is None:
-                    st.write("Error: vector store was not created.")
-                    # Handle the failure case here, maybe return or log a message
 
                 # Saving the vector store in the session state so that this does not rerun constantly
                 st.session_state.vs = vector_store
