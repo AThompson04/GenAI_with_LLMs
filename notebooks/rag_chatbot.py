@@ -123,12 +123,12 @@ def create_embeddings_chroma(chunks, file_name):
         #st.write(f"Error creating Chroma vector store: {e}")
         return None
 
-def ask_with_memory(vector_store, k, question, chat_history):
+def ask_with_memory(vector_store, k, question, chat_history,model):
     from langchain.chains import ConversationalRetrievalChain
     from langchain_openai import ChatOpenAI
     from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 
-    llm = ChatOpenAI(model='gpt-3.5-turbo', temperature=0)
+    llm = ChatOpenAI(model=model, temperature=0)
     retriever = vector_store.as_retriever(search_kwargs={'k': k}, search_type='similarity')
 
     system_template = r'''
@@ -185,6 +185,13 @@ if __name__ == '__main__':
         api_key = st.text_input('OpenAI API Key:', type='password')
         if api_key:
             os.environ['OPENAI_API_KEY'] = api_key
+        model = st.segmented_control(label='OpenAI Model', options=['gpt-4o', 'gpt-3.5-turbo', 'gpt-4o-mini'],
+                                     default='gpt-3.5-turbo', selection_mode='single',
+                                     help='This model will be used to summarise you document or text.')
+        if not model:
+            model = 'gpt-3.5-turbo'
+            st.warning('No model has been selected, so gpt-3.5-turbo will be used by default')
+        st.session_state.model = model
 
         uploaded_file = st.file_uploader('Upload a file:', type=['pdf', 'txt', 'docx'])
         chunk_size = st.number_input('Chunk Size:', min_value=100, max_value=2048, value=512)
@@ -242,7 +249,7 @@ if __name__ == '__main__':
             vector_store = st.session_state.vs
 
             # Generate Response
-            result = ask_with_memory(vector_store, k, q, st.session_state.history)
+            result = ask_with_memory(vector_store, k, q, st.session_state.history, st.session_state.model)
 
             # Add question and answer to the history (given to the AI)
             st.session_state.history.append((q, result['answer']))

@@ -31,9 +31,16 @@ if __name__ == '__main__':
 
     with st.sidebar:
         openai_key = st.text_input(label = 'OpenAI API Key', type = 'password')
+        # Choosing the Model Type
+        model = st.segmented_control(label='OpenAI Model', options=['gpt-4o', 'gpt-3.5-turbo', 'gpt-4o-mini'],
+                                     default='gpt-3.5-turbo', selection_mode='single',
+                                     help='This model will be used to summarise you document or text.')
+        if not model:
+            model = 'gpt-3.5-turbo'
+            st.warning('No model has been selected, so gpt-3.5-turbo will be used by default')
         if openai_key:
             os.environ['OPENAI_API_KEY'] = openai_key
-            chat = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=0.5)
+            chat = ChatOpenAI(model_name=model, temperature=0.5)
 
         system_message = st.text_input(label = 'System Role', disabled = st.session_state.disabled)
 
