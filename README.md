@@ -4,22 +4,21 @@
 
 > Generative AI is a subset of AI, where generative models are used to create content such as text, images etc. This project will focus on generating text content.
 
-This project consists of three generative AI models:
+This project consists of three generative AI models that can be run on Streamlit applications:
 1. **Chatbot:**<br/>LLM based chatbots generate contextually relevant responses to the end user's queries while considering the entire interaction between chatbot and end user, and personalising its interaction to meet the end user's goal.  
 2. **Retrieval-Augmented Generation (RAG) Chatbot:**<br/>A Framework that uses LLMs and private data to provide the end user with more accurate, up-to-date and contextually relevant answers. This is done through retrieval and generation. Relevant information on the end user's query is found in the private documents and sent to the LLM. The model then generates a response using the end user's query, the private information received and its own internal knowledge.
 3. **Summariser:**<br/>With use of LLMs concise or specifically structured summaries are generated from longer text documents. The summaries can be generated using a variety of techniques which are showcased in this project.<br/><br/>
 
 ## Models
-This section will highlight how each of the models work and have been structured.
+This section will highlight how each of the models work and have been structured. 
 ### Chatbot
 
+The end-user can decide how it would like that chatbot to act, this could be the language or the perspective that the chatbot uses when responding, this is referred to as the system prompt. The end-user does not need to specify the system prompt, if they do not enter one then the chatbot will act as a helpful assistant. Once the end-user has entered their first pompt they will not be able to change the system prompt, however they can ask the chatbot to change how they respond within a prompt.
 
-Using Langchain_openai's ChatOpenAi
-Model got-3.5-turbo by default but this could be changed. Not that changes in model will change the price of each request. Temperature = 0.5 (measure between 0 and 1 which determines the 'creativeness' of the response. 0 indicates that the responses will be straightforward and predictable aka you will always get the same response to the same prompt. 1 indicating that the responses can vary widely to prompt. An extension to the current model would be to let the end-user change the model temperature. Warning that if the temperature is high the chatbot can start 'hallucinating' which means the model could produce misleading or incorrect results. Add how temperature works? LLMs work by selecting the next best word given the prompt so low temperature = high probability next words and high temperatures = words with lower probability.) Because there is no specific purpose for this chatbot I selected 0.5 so that you could perform some more creative tasks as well.
-System prompt - how you would like the model to act. If none is given the model is asked to act as a helpful assistant. This could be used to ask the model to respond in a specific role I.e. HR Manager, or to respond in a different language etc. Please not that this cannot be changed after your initial prompt to the chatbot however you can specify in your prompts to respond to the particular prompt differently (or from now on... test).
-The user is prompted to give a prompt.
-This is added to the chatbot 'memory', the session state.
-The entire conversation and the system prompt, the session state, are set to the model select and the response is returned and displayed to the end user. This response is saved in the memory, session state. Add the reason for storing and sending the memory is so that the chatbot can give the most relevant answers to the question based on previous questions and so you can ask follow up questions or reference other questions.
+Once the end-user enters their prompt it will be stored in the chatbot memory along with the system prompt - the chat history in the session state. The entire converstion, the history in the session state, are to the LLM which generates a response. The response is display to the user by the chatbot and saved to the history in the session state. All prompts and responses are stored and sent so that the LLM can generate the most relevant response to the prompt based on previous prompts and responses. This allows the end-user to ask follow-up questions or reference previous prompts and responses.
+
+The LLM in use is *langchain_openai*'s *ChatOpenAI*. There were two factors that were considered for this LLM - the model and the temperature. Model refers to the OpenAI model that the chatbot is using, by default the model is 'gpt-3.5-turbo' but the end-user can change this to 'gpt-4o' or 'gpt-4o-mini'. Temperature refers to the 'creativeness' of the LLM's generated responses. Temperature ranges from zero to one, with zero indicating that the responses are straightforward and predictable - you will most likely get the same response if you ask the same prompt multiple times, and one indicating a response that is more creative and that will change if you ask the same prompt more than once. Generally higher temperatures are used for more creative task such as writing a marketing strategy. However, when the temperature is high the chatbot can start hallucinating' which means the model could produce misleading or incorrect results.
+The temperature for this chatbot is set to 0.5 and cannot be changed, although further work to this project could include allowing the end-user to change the model's temperature.
 
 ### RAG Chatbot
 
