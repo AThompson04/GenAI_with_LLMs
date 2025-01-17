@@ -11,7 +11,7 @@ This project consists of three generative AI models:
 
 ## Models
 This section will highlight how each of the models have been built.
-#### Chatbot
+### Chatbot
 
 
 Using Langchain_openai's ChatOpenAi
@@ -21,16 +21,28 @@ The user is prompted to give a prompt.
 This is added to the chatbot 'memory', the session state.
 The entire conversation and the system prompt, the session state, are set to the model select and the response is returned and displayed to the end user. This response is saved in the memory, session state. Add the reason for storing and sending the memory is so that the chatbot can give the most relevant answers to the question based on previous questions and so you can ask follow up questions or reference other questions.
 
-#### RAG Chatbot
+### RAG Chatbot
 
 User adds their document, if they would like to specify specifies the chuck size (the number of characters in a chunk - the more letters in a chuck the more information is sent to the LLM which could result in a more accurate answer. If the chuck size is too small you may lose information. EXPLAIN more) and the number of similar items that must be retrieved and sent to the LLM (k).
 The model created a Chroma storage directory where the embedded data will be stored.
 The data is split into chucks.
-The chucks are used to create embeddings (Because computers cannot understand text, the text needs to be transformed into a form which can be understood which is numerical vectors. Embeddings are real world objects like text, images or videos that are converted into a form that computers can process - a vector. By creating embeddings similarity searches can be preformed - finding pieces of text that are similar to each other by finding vectors that are similar to each other. Add picture with [reference](https://towardsdatascience.com/mastering-customer-segmentation-with-llm-3d9008235f41#3a33)) and stored in the Chroma Storage directory and as a vector.
+The chucks are used to create embeddings (Because computers cannot understand text, the text needs to be transformed into a form which can be understood which is numerical vectors. Embeddings are real world objects like text, images or videos that are converted into a form that computers can process - a vector. By creating embeddings similarity searches can be preformed - finding pieces of text that are similar to each other by finding vectors that are similar to each other. Add picture with [reference](https://towardsdatascience.com/mastering-customer-segmentation-with-llm-3d9008235f41#3a33)) and stored in the Embeddings done using langchain_openai's OpenAIEmbeddings with the model 'text-embeddind-3-small'. Chroma Storage directory and as a vector.
 When a new document is uploaded, any information from the previous document will be discarded. This is done by clearing the Chroma Storage Directory.
 Once the document has been uploaded the end-user can prompt the chatbot. The model will find the k most similar/relevant chucks of information according to the prompt from the document. These chucks will be sent to the LLM along with the users prompt and all the chat history - reason (so that the chatbot can give the most relevant answers to the question based on previous questions and so you can ask follow up questions or reference other questions). The LLM will generate an answer which will be displayed in the chat. Both the prompt and the answer will be saved to the session state, 'memory'. The LLM has instructions (a system prompt) to use its own knowledge outside the context if the context/chucks do not contain information about the question.
 The LLM in use is ChatOpenAI model = get-3.5-turbo by default but can select another (check). Temperature = 0
 
-#### Summariser
+### Summariser
+
+The data summariser can either summarise text typed into the console or summarise a document. The three document types that it accepts is pdf, txt or docx. The document or text will be loaded and stored to the models memory. There are three options:
+- Provide a summary for a short document
+- Provide a summary for a long document
+- Provide a summary based on information on Wikipedia
+Each of the options mentioned above use *langchain_openai*'s *ChatOpenAI* function. The OpenAI model used by default is 'gpt-3.5-turbo' but the end-user can change this to 'gpt-4o' or 'gpt-4o-mini'.
+
+More details about each summarisation option:
+1. **Summarise a Short Document:**<br/>When summarising a short document you are given three summarisation options - to provide a concise summary, provide the concise summary in a different language or to summarise the document using specific instructions i.e. include an introduction and conclusion, and summarise all main points using bullet points. For each summarisation option prompts are used to tell the LLM how to summarise the data, this was done using *langchain_core*'s *PromptTemplate* function. When providing a concise summary the LLM prompt is as follows "You are an expert copywriter with expertise in summarising documents. Write a summary of the following text.". When converting to a different language the LLM prompt is to "Write a summary of the following text and to translate the summary to {the language given by the end user}'. When summarising using specific instructions the prompt is entirely the instruction from the end-user.<br/>The information for each option is passed to the LLM using the chain approach, i.e. the entire document is summarised in a single prompt. The summary generated by the LLM is displayed by the model.
+2. **Summarise a Long Document:**<br/>When summarising a longer document you are given two sets of options - the first refers to the instructions sent to the LLM on how to summarise the document, and the second refers to how the information is sent the the LLM (chain type). For the first option the LLM is asked to provide a concise summary or to summarise the document using specific instructions. The second option sends the information to the LLM using either the Map Reduce or Refine chain type. The Map Reduce chain type chunks the document(s) and instructs the LLM to summarise the chunks of the document separately and then to provide a final summary by summarising the summarises of each chunk. The Refine chain type chunks the document(s) and instructs the LLM to create a summary of the first chunk, the to create another summary using the next chunk and the previous summary. The final summary is produced by summarising the last chunk of the document and the previous summary. [reference to images](https://ogre51.medium.com/types-of-chains-in-langchain-823c8878c2e9).<br/>
+
+
 
 ## Setting Up Your Environment / Prerequisites
