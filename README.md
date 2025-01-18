@@ -48,3 +48,14 @@ Each of the options mentioned above use *langchain_openai*'s *ChatOpenAI* functi
 3. **Summarise Wikipedia Information:**<br/>When summarising information from Wikipedia the end-user needs to provide a question or what they would like information on, and select the reasoning method that they would like the agent to use when summarising the data. The reasoning methods available for this model are *'zero-shot-react-description'* and *'self-ask-with-search'*.<br/><br/>*'zero-shot-react-description'* refers to the reasoning method where the agent does not ask additional questions but rather generates a response based on the information that it has.<br/><br/>*'self-ask-with-search'* refers to the reasoning method where the agent will ask itself additional questions about the end-users topic and based on its findings to these questions generate a more informed response.<br/><br/>Information from Wikipedia is accessed using *langchain*'s *WikipediaAPIWrapper* function, and the agent is set up using *langchain*'s *initialize_agent* function. Once the agent has an answer to the end-user's prompt it will be displayed by the model.<br/><br/>
 
 ## Setting Up Your Environment / Prerequisites
+In order to use the three models you need to set up an OpenAI API key and purchase credits. To create an OpenAI API key and purchase credits:
+1. Go to the API login on [openai.com](https://platform.openai.com/docs/overview)
+2. Set up an account, or login if you already have an account
+3. Create a project
+4. In the project, go to *API keys* and click *Create new secret key*
+5. Review the secret key's permissions
+6. Once you have created the key, save it and store it because you will no be able to view it again.
+
+To run the streamlit apps:
+1. On a terminal
+2. Run "streamlit run 
