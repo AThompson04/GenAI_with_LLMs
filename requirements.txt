@@ -8,3 +8,4 @@ pysqlite3-binary==0.4.6
 pip>=24.0
 tiktoken==0.8.0
 wikipedia
+docx2txt
