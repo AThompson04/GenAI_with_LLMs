@@ -46,12 +46,12 @@ In order to use the three models from this project, you will need an OpenAI API 
 1. Go to the API login on [openai.com](https://platform.openai.com/docs/overview)
 2. Set up an account, or login if you already have an account
 3. Create a project
-4. In the project, go to *API keys* and click *Create new secret key*
+4. In the project, go to *Settings* then *API keys* and click *Create new secret key*
 5. Review the secret key's permissions
 6. Once you have created the key, save it and store it because you will no be able to view it again.
 7. Purchase credits.
 
 To run the streamlit apps, use the links provided below and enter your OpenAI API key:
-- [Chatbot]()
-- [RAG Chatbot]()
-- [Summariser]()
+- [Chatbot](https://athompson-chatbot.streamlit.app/)
+- [RAG Chatbot](https://athompson-rag-chatbotstreamlit.app/)
+- [Summariser](https://athompson-summariser.streamlit.app/)
