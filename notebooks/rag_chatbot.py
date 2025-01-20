@@ -176,7 +176,10 @@ def response_generator(response):
 
 if __name__ == '__main__':
     import os
-
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+    
     st.set_page_config(page_title='RAG',
                        page_icon='../assets/catworking.png',
                        layout='wide')
