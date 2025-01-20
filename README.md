@@ -53,5 +53,5 @@ In order to use the three models from this project, you will need an OpenAI API 
 
 To run the streamlit apps, use the links provided below and enter your OpenAI API key:
 - [Chatbot](https://athompson-chatbot.streamlit.app/)
-- [RAG Chatbot](https://athompson-rag-chatbotstreamlit.app/)
+- [RAG Chatbot](https://athompson-rag-chatbot.streamlit.app/)
 - [Summariser](https://athompson-summariser.streamlit.app/)
