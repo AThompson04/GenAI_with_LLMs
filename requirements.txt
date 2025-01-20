@@ -5,3 +5,4 @@ langchain-core==0.3.19
 langchain-community==0.3.7
 chromadb==0.4.14
 tiktoken==0.8.0
+pysqlite3==0.4.6
