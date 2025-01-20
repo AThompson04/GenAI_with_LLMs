@@ -9,3 +9,4 @@ pip>=24.0
 tiktoken==0.8.0
 wikipedia
 docx2txt
+pypdf
