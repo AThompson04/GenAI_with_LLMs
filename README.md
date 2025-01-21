@@ -9,7 +9,22 @@ This project consists of three generative AI models that can be run on Streamlit
 2. **Retrieval-Augmented Generation (RAG) Chatbot:**<br/>A Framework that uses LLMs and private data to provide the end-user with more accurate, up-to-date and contextually relevant answers. This is done through retrieval and generation. Relevant information on the end-user's query is found in the private documents and sent to the LLM. The model then generates a response using the end-user's query, the private information received and its own internal knowledge.
 3. **Summariser:**<br/>With use of LLMs, concise or specifically structured summaries are generated from longer text documents. The summaries can be generated using a variety of techniques which are showcased in this project.<br/><br/>
 
-## Models
+## Streamlit Applications
+In order to use the three models from this project, you will need an OpenAI API key and to purchase credits. The OpenAI API key is like a unique password that allows you access to OpenAI's services, and in order to use OpenAI's services you will need to purchase credits. To create an OpenAI API key and purchase credits:
+1. Go to the API login on [openai.com](https://platform.openai.com/docs/overview)
+2. Set up an account, or login if you already have an account
+3. Create a project
+4. In the project, go to *Settings* then *API keys* and click *Create new secret key*
+5. Review the secret key's permissions
+6. Once you have created the key, save it and store it because you will no be able to view it again.
+7. Purchase credits.
+
+To run the streamlit apps, use the links provided below and enter your OpenAI API key:
+- [Chatbot](https://athompson-chatbot.streamlit.app/)
+- [RAG Chatbot](https://athompson-rag-chatbot.streamlit.app/)
+- [Summariser](https://athompson-summariser.streamlit.app/) <br/><br/>
+
+## More About the Models
 ### Chatbot
 
 The end-user can decide how it would like that chatbot to act, this could be the language or the perspective that the chatbot uses when responding, this is referred to as the system prompt. A 'system prompt' is an initial instruction that defines how the model should behave during the conversation. It acts like the chatbot’s 'persona' or 'style' e.g., formal, casual, helpful. For example, asking to the chatbot to respond using a formal tone will result in the chatbot using a professional tone, whereas a casual tone would have resulted in more friendly and informal responses. The end-user can customise this to some extent before the start of the conversation, but it cannot be changed once the conversation begins. The end-user does not need to specify the system prompt, if they do not enter one then the chatbot will act as a helpful assistant. 
@@ -41,17 +56,3 @@ Each of the options mentioned above use *langchain_openai*'s *ChatOpenAI* functi
 2. **Summarise a Long Document:**<br/>When summarising a longer document you are given two sets of options - the first refers to the instructions sent to the LLM on how to summarise the document, and the second refers to how the information is sent the the LLM and the method used when summarising (chain type). For the first selection, the LLM is asked to provide a concise summary or to summarise the document using specific instructions. The second selections allows the end-user to decide how the information is sent to the LLM - using either the Map Reduce or Refine chain type. These two methods are ways the model handles long documents.<br/><br/>The *Map Reduce* chain type breaks down the document into chunks, summarises each chunk separately and then generate a final summary by summarising all the summaries. See the visual explanation in Figure 3 below by [Rahul](https://ogre51.medium.com/types-of-chains-in-langchain-823c8878c2e9).<br/><figure><p align="center"><img src='/assets/map_refine.webp' style="width: 65%; height: auto;"><br/><figcaption>*Figure 3: Map Reduce Chain Type Visualisation*</figcaption><p/></figure><br/>The *Refine* chain type breaks the document into chunks, creates an initial summary using the first chunk and refines that summary with each subsequent chunk. This process is repeated until a final summary is generated. See the visual explanation in Figure 4 below by [Rahul](https://ogre51.medium.com/types-of-chains-in-langchain-823c8878c2e9). <br/><figure><p align="center"><img src='/assets/refine.webp' style="width: 65%; height: auto;"><br/><figcaption>*Figure 4: Refine Chain Type Visualisation*</figcaption><p/></figure><br/>If the summarisation instructions are to provide a concise summary, then the LLM will generate a standard final summary. Otherwise, if end-user would like the LLM to summarise using specific instructions then the instruction will be added to a final prompt, using *langchain_core*'s *PromptTemplate* function. For example, including an introduction and conclusion and summarising all main points using bullet points. The initial prompt for both the Map Reduce and Refine approach is to write a concise summary. This will be used to generate summaries for all the chunks for the Map Reduce approach, and all the summaries except the final summary for the Refine chain type. The final prompt with the end-user's specific instructions will be used when summarising all the chunk summaries in the Map Reduce approach and to generate the final summary using the last chuck and previous summary for the Refine approach. Once the final summary has been generated by the LLM, it is displayed by the model.<br/><br/>
 3. **Summarise Wikipedia Information:** <br/>When summarising information from Wikipedia the end-user needs to provide a question or what they would like information on, and select the reasoning method that they would like the agent to use when summarising the data. The reasoning methods available for this model are *'zero-shot-react-description'* and *'self-ask-with-search'*.<br/><br/>*'zero-shot-react-description'* means that the agent generates a response without asking additional questions, rather relying on what it already knows.<br/><br/>*'self-ask-with-search'* allows the agent to ask itself further questions. This is done so that the agent can gather more context to provide a more informed response.<br/><br/>Information from Wikipedia is accessed using *langchain*'s *WikipediaAPIWrapper* function, and the agent is set up using *langchain*'s *initialize_agent* function. Once the agent has an answer to the end-user's prompt it will be displayed by the model.<br/><br/>
 
-## Streamlit Applications
-In order to use the three models from this project, you will need an OpenAI API key and to purchase credits. The OpenAI API key is like a unique password that allows you access to OpenAI's services, and in order to use OpenAI's services you will need to purchase credits. To create an OpenAI API key and purchase credits:
-1. Go to the API login on [openai.com](https://platform.openai.com/docs/overview)
-2. Set up an account, or login if you already have an account
-3. Create a project
-4. In the project, go to *Settings* then *API keys* and click *Create new secret key*
-5. Review the secret key's permissions
-6. Once you have created the key, save it and store it because you will no be able to view it again.
-7. Purchase credits.
-
-To run the streamlit apps, use the links provided below and enter your OpenAI API key:
-- [Chatbot](https://athompson-chatbot.streamlit.app/)
-- [RAG Chatbot](https://athompson-rag-chatbot.streamlit.app/)
-- [Summariser](https://athompson-summariser.streamlit.app/)
