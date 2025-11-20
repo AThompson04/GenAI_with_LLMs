@@ -2,7 +2,7 @@ streamlit==1.40.1
 langchain==0.3.7
 langchain-openai==0.2.9
 langchain-core==0.3.19
-langchain-community==0.3.7
+langchain-community==0.3.27
 chromadb>=0.4.14
 pysqlite3-binary
 pip>=24.0
